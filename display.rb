@@ -14,7 +14,7 @@ module Display
   end
 
   def display_setup_message
-    "Would you be the codebreaker or the codemaker? (while the computer guess your code)"
+    "Would you be the codebreaker or the codemaker?"
   end
 
   def display_setup_choice

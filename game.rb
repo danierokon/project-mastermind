@@ -21,7 +21,7 @@ class Game
         stuck_in_menu = false
       elsif input == 'n'
         puts display_goodbye
-        stuck_in_menu = false
+        return stuck_in_menu = false
       else
         puts display_input_warning
         input = gets.chomp.downcase
