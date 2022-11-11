@@ -1,9 +1,13 @@
 # 12 turns limit
 # menu -> generate secret code -> (loop) guess => feedback -> result -> replay?
 require_relative 'display.rb'
+require_relative 'color.rb'
+require_relative 'board.rb'
 
+PEGS = ["black", "red", "green", "brown", "blue", "magenta", "cyan", "gray"]
 class Game
   include Display
+  attr_reader :board
 
   def initialize
     @turns_left = 12
@@ -47,6 +51,12 @@ class Game
         input = gets.chomp
       end
     end
+  end
+
+  def generate_code
+    @code = PEGS.sample(4)
+    @board.generate_code(@code)
+    puts @code
   end
 
 
