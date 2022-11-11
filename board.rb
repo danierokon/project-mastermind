@@ -1,23 +1,24 @@
 # display board on screen
 require_relative 'color.rb'
-class Board
-  black = "⬤".black
-  red = "⬤".red
-  green = "⬤".green
-  brown = "⬤".brown
-  blue = "⬤".blue
-  magenta = "⬤".magenta
-  cyan = "⬤".cyan
-  gray = "⬤".gray
+class Board  
+  # ⬤ ⓿ ❶ ❷ ❸ ❹ ❺ ❻ ❼ ❽
+  @@black = "❶".black
+  @@red = "❷".red
+  @@green = "❸".green
+  @@brown = "❹".brown
+  @@blue = "❺".blue
+  @@magenta = "❻".magenta
+  @@cyan = "❼".cyan
+  @@gray = "❽".gray
 
-  COLOR_PEGS = {"black" => black,
-                "red" => red,
-                "green" => green,
-                "brown" => brown,
-                "blue" => blue,
-                "magenta" => magenta,
-                "cyan" => cyan,
-                "gray" => gray}
+  COLOR_PEGS = {"black" => @@black,
+                "red" => @@red,
+                "green" => @@green,
+                "brown" => @@brown,
+                "blue" => @@blue,
+                "magenta" => @@magenta,
+                "cyan" => @@cyan,
+                "gray" => @@gray}
 
   def initialize
     @secret_code = Array.new
@@ -36,5 +37,9 @@ class Board
       end
     end
     @secret_code
-  end 
+  end
+
+  def pegs_numbers
+    "1 = #{@@black}, 2 = #{@@red}, 3 = #{@@green}, 4 = #{@@brown}, 5 = #{@@blue}, 6 = #{@@magenta}, 7 = #{@@cyan}, 8 = #{@@gray}"
+  end
 end

@@ -10,5 +10,4 @@ end
 # puts "⬤".red
 # puts Board::COLOR_PEGS
 game = Game.new
-game.generate_code
-puts game.board.display_board
+game.menu

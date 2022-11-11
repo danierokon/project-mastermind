@@ -42,7 +42,8 @@ class Game
     while stuck_in_menu
       if input == '1'
         stuck_in_menu = false
-        # computer generate code
+        generate_code
+        gaming
       elsif input == '2'
         stuck_in_menu = false
         # human input code
@@ -56,7 +57,42 @@ class Game
   def generate_code
     @code = PEGS.sample(4)
     @board.generate_code(@code)
-    puts @code
+  end
+
+  def gaming
+    gaming = true
+    while gaming == true
+      puts @board.display_board
+      puts how_to_guess
+      puts @board.pegs_numbers
+      puts gaming_message(@turns_left)
+      input = gets.chomp
+      input = input_check(input)
+      sleep 10000
+      @turns_left -= 1
+      # guess
+    end
+  end
+
+  #check if input has 0 or 9, if integer, if 4 digit
+  def input_check(input)
+    if zero_or_nine?(input.split('')) == false && input.to_i != 0 && input.split('').length == 4      
+      puts "input good"
+    else
+      puts "input bad, reeeee"
+      input = gets.chomp
+      input_check(input)
+    end      
+  end
+
+  def zero_or_nine?(input_array)
+    input_array.reduce do |invalid, digit|
+      if %w[0 9].include? digit
+        return invalid = true
+      else
+        invalid = false
+      end
+    end
   end
 
 
