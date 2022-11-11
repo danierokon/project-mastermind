@@ -10,6 +10,14 @@ module Display
   end
 
   def display_input_warning
-    "Please enter valid input! (y/n)"
+    "Please enter valid input!"
+  end
+
+  def display_setup_message
+    "Would you be the codebreaker or the codemaker? (while the computer guess your code)"
+  end
+
+  def display_setup_choice
+    "1. Codebreaker\n2. Codemaker"
   end
 end
