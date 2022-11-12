@@ -19,39 +19,22 @@ class Game
   def menu
     puts display_intro
     input = gets.chomp.downcase
-    stuck_in_menu = true
-    while stuck_in_menu == true
-      if input == 'y'
-        stuck_in_menu = false
-      elsif input == 'n'
-        puts display_goodbye
-        return stuck_in_menu = false
-      else
-        puts display_input_warning
-        input = gets.chomp.downcase
-      end
-    end
-    game_setup
+    return game_setup if input == 'y'
+    return puts display_goodbye if input == 'n'
+
+    puts display_input_warning
+    menu
   end
 
   def game_setup
     puts display_setup_message
     puts display_setup_choice
     input = gets.chomp
-    stuck_in_menu = true
-    while stuck_in_menu
-      if input == '1'
-        stuck_in_menu = false
-        generate_code
-        gaming
-      elsif input == '2'
-        stuck_in_menu = false
-        # human input code
-      else
-        puts display_input_warning
-        input = gets.chomp
-      end
-    end
+    return gaming if input == '1'
+    return puts "human input code" if input == '2'
+
+    puts display_input_warning
+    game_setup
   end
 
   def generate_code
@@ -61,6 +44,7 @@ class Game
 
   def gaming
     gaming = true
+    generate_code
     while gaming == true
       puts @board.display_board
       puts how_to_guess
@@ -68,32 +52,51 @@ class Game
       puts gaming_message(@turns_left)
       input = gets.chomp
       input = input_check(input)
-      sleep 10000
+      # compare @guess vs @code for feedback/result
+
       @turns_left -= 1
-      # guess
     end
   end
 
   #check if input has 0 or 9, if integer, if 4 digit
   def input_check(input)
-    if zero_or_nine?(input.split('')) == false && input.to_i != 0 && input.split('').length == 4      
+    if input.length == 4 && input.match?(/[1-8]{4}/)
       puts "input good"
+      @guess = input.split('')
+      @guess = replace_number_to_color(@guess)
+      puts @guess
     else
       puts "input bad, reeeee"
       input = gets.chomp
       input_check(input)
-    end      
+    end
   end
-
-  def zero_or_nine?(input_array)
-    input_array.reduce do |invalid, digit|
-      if %w[0 9].include? digit
-        return invalid = true
-      else
-        invalid = false
+  
+  def replace_number_to_color(guess_array)
+    guess_array.map do |element|
+      case element
+      when '1'
+        element = "black"
+      when '2'
+        element = "red"
+      when '3'
+        element = "green"
+      when '4'
+        element = "brown"
+      when '5'
+        element = "blue"
+      when '6'
+        element = "magenta"
+      when '7'
+        element = "cyan"
+      when '8'
+        element = "gray"
       end
     end
   end
 
-
+  def check_answer(guess)
+    # match = 4 => win
+    # match .each + .each -> @guess[0] == @code[0] = match+1, @guess[0] == @code[not 0] = close+1 ???
+  end
 end
