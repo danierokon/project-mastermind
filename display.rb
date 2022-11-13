@@ -23,7 +23,7 @@ module Display
   end
 
   def gaming_message(turns)
-    "You can make #{turns} more guess(es)"
+    "You can make #{13 - turns} more guess(es)"
   end
 
   def how_to_guess

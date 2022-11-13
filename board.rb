@@ -1,7 +1,7 @@
 # display board on screen
 require_relative 'color.rb'
 class Board  
-  # ⬤ ⓿ ❶ ❷ ❸ ❹ ❺ ❻ ❼ ❽
+  # ⬤ ⦿ ⓿ ❶ ❷ ❸ ❹ ❺ ❻ ❼ ❽
   @@black = "❶".black
   @@red = "❷".red
   @@green = "❸".green
@@ -27,7 +27,11 @@ class Board
   end
 
   def display_board
-    "TEST Secret code: " + @secret_code.join(" ")
+    puts "TEST Secret code: " + @secret_code.join(" ")
+    # puts " 1. #{@guesses[0].join(" ")} " unless @guesses[0] == nil
+    @guesses.each_with_index do |guess, index|
+      puts "#{index + 1}.  #{guess.join(" ")}    #{@feedback[index]}" unless guess == nil
+    end
   end
 
   def generate_code(code_array)
@@ -42,4 +46,25 @@ class Board
   def pegs_numbers
     "1 = #{@@black}, 2 = #{@@red}, 3 = #{@@green}, 4 = #{@@brown}, 5 = #{@@blue}, 6 = #{@@magenta}, 7 = #{@@cyan}, 8 = #{@@gray}"
   end
+
+  def add_guesses(guess_array, current_turn)
+    @guesses[current_turn - 1] = guess_array.dup
+    @guesses[current_turn - 1].each_with_index do |color, index|
+      @guesses[current_turn - 1][index] = COLOR_PEGS[color] if COLOR_PEGS[color]
+    end
+  end
+
+  def add_clues(perfect_match, close_match, current_turn)
+    @feedback[current_turn - 1] = '' if @feedback[current_turn - 1] == nil
+    perfect_match.times do
+      @feedback[current_turn - 1].concat('⬤ '.red)
+    end
+    close_match.times do
+      @feedback[current_turn - 1].concat('⦿ '.red)
+    end
+    (4 - perfect_match - close_match).times do
+      @feedback[current_turn - 1].concat('⬤ '.gray)
+    end
+  end
+
 end

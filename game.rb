@@ -10,7 +10,7 @@ class Game
   attr_reader :board
 
   def initialize
-    @turns_left = 12
+    @current_turn = 1
     @code = nil
     @guess = nil
     @board = Board.new
@@ -46,32 +46,34 @@ class Game
     gaming = true
     generate_code
     while gaming == true
-      puts @board.display_board
+      @board.display_board
       puts how_to_guess
       puts @board.pegs_numbers
-      puts gaming_message(@turns_left)
+      puts gaming_message(@current_turn)
       input = gets.chomp
       input = input_check(input)
       # compare @guess vs @code for feedback/result
-
-      @turns_left -= 1
-    end
+      prefect_match = check_answer(@guess)
+      gaming = delcare_result(prefect_match, @current_turn)
+      @current_turn += 1
+    end 
+    puts "wtf"
   end
 
-  #check if input has 0 or 9, if integer, if 4 digit
+  # check if input has 0 or 9, if integer, if 4 digit
   def input_check(input)
     if input.length == 4 && input.match?(/[1-8]{4}/)
-      puts "input good"
+      # puts "input good"
       @guess = input.split('')
       @guess = replace_number_to_color(@guess)
-      puts @guess
+      @board.add_guesses(@guess, @current_turn)
     else
       puts "input bad, reeeee"
       input = gets.chomp
       input_check(input)
     end
   end
-  
+
   def replace_number_to_color(guess_array)
     guess_array.map do |element|
       case element
@@ -96,7 +98,35 @@ class Game
   end
 
   def check_answer(guess)
-    # match = 4 => win
-    # match .each + .each -> @guess[0] == @code[0] = match+1, @guess[0] == @code[not 0] = close+1 ???
+    perfect_match = 0
+    close_match = 0
+    color_with_perfect_match = []
+    color_with_close_match = []
+    @guess.each_with_index do |element, index|
+      if @guess[index] == @code[index]
+        perfect_match += 1
+        color_with_perfect_match << element
+      end
+    end
+    @guess.each_with_index do |element, index|
+      next if color_with_perfect_match.include?(element) || color_with_close_match.include?(element)
+
+      close_match += 1 if @code.include?(element)
+      color_with_close_match << element if @code.include?(element)
+    end
+    @board.add_clues(perfect_match, close_match, @current_turn)
+    perfect_match
+  end
+
+  def delcare_result(perfect_match, current_turn)
+    # result when turns = 12 or prefect match = 4
+    if perfect_match == 4
+      puts "win"
+      return false
+    elsif current_turn == 12
+      puts "no more guesses available"
+      return false
+    end
+    true
   end
 end
