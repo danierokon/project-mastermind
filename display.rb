@@ -23,10 +23,31 @@ module Display
   end
 
   def gaming_message(turns)
-    "You can make #{13 - turns} more guess(es)"
+    return "This is your last chance, think carefully!" if turns == 12
+    "You can make #{13 - turns} more guesses"
   end
 
   def how_to_guess
     "Enter your input with numbers representing the colored pegs."
+  end
+
+  def bad_input
+    "Makes sure your input is just 4 numbers(1-8) (dupes allowed)".red
+  end
+
+  def win_message
+    "You've cracked the code! Congratualations!"
+  end
+
+  def turn_limit
+    "Unfortunately, you've ran out of chances, better luck next time!"
+  end
+
+  def reveal_code(code)
+    "The secret code is #{code} "
+  end
+
+  def thank_you_message
+    "Thank you for playing! Another game maybe?(y/n)"
   end
 end

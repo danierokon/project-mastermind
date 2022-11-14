@@ -2,6 +2,7 @@
 require_relative 'color.rb'
 class Board  
   # ⬤ ⦿ ⓿ ❶ ❷ ❸ ❹ ❺ ❻ ❼ ❽
+  attr_reader :secret_code
   @@black = "❶".black
   @@red = "❷".red
   @@green = "❸".green
@@ -27,8 +28,7 @@ class Board
   end
 
   def display_board
-    puts "TEST Secret code: " + @secret_code.join(" ")
-    # puts " 1. #{@guesses[0].join(" ")} " unless @guesses[0] == nil
+    puts "TEST Secret code: " + @secret_code.join(" ")    
     @guesses.each_with_index do |guess, index|
       puts "#{index + 1}.  #{guess.join(" ")}    #{@feedback[index]}" unless guess == nil
     end

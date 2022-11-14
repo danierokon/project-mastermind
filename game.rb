@@ -38,7 +38,7 @@ class Game
   end
 
   def generate_code
-    @code = PEGS.sample(4)
+    @code = 4.times.map {PEGS.sample}
     @board.generate_code(@code)
   end
 
@@ -57,7 +57,7 @@ class Game
       gaming = delcare_result(prefect_match, @current_turn)
       @current_turn += 1
     end 
-    puts "wtf"
+    puts thank_you_message
   end
 
   # check if input has 0 or 9, if integer, if 4 digit
@@ -68,7 +68,7 @@ class Game
       @guess = replace_number_to_color(@guess)
       @board.add_guesses(@guess, @current_turn)
     else
-      puts "input bad, reeeee"
+      puts bad_input
       input = gets.chomp
       input_check(input)
     end
@@ -100,19 +100,20 @@ class Game
   def check_answer(guess)
     perfect_match = 0
     close_match = 0
-    color_with_perfect_match = []
-    color_with_close_match = []
+    temp = []
+    index_given_clue = []
+    @guess.each {|ele| temp << ele.clone}
     @guess.each_with_index do |element, index|
       if @guess[index] == @code[index]
         perfect_match += 1
-        color_with_perfect_match << element
+        temp[index].replace('Given clues')
+        index_given_clue << index.clone
       end
     end
-    @guess.each_with_index do |element, index|
-      next if color_with_perfect_match.include?(element) || color_with_close_match.include?(element)
-
-      close_match += 1 if @code.include?(element)
-      color_with_close_match << element if @code.include?(element)
+    @code.each_with_index do |element, index|      
+      puts "temp looks like #{temp}"
+      close_match += 1 if temp.include?(element) && index_given_clue.include?(index) == false
+      
     end
     @board.add_clues(perfect_match, close_match, @current_turn)
     perfect_match
@@ -121,10 +122,12 @@ class Game
   def delcare_result(perfect_match, current_turn)
     # result when turns = 12 or prefect match = 4
     if perfect_match == 4
-      puts "win"
+      puts reveal_code(@board.secret_code.join(" "))
+      puts win_message
       return false
     elsif current_turn == 12
-      puts "no more guesses available"
+      puts reveal_code(@board.secret_code.join(" "))
+      puts turn_limit
       return false
     end
     true

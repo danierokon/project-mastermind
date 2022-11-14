@@ -3,11 +3,21 @@ require_relative 'display.rb'
 require_relative 'board.rb'
 require_relative 'color.rb'
 
+include Display
 def play_game
   new_game = Game.new
   new_game.menu
+  replay
+end
+
+def replay
+  input = gets.chomp.downcase
+  return play_game if input == 'y'
+  return puts display_goodbye if input == 'n'
+
+  puts display_input_warning
+  replay
 end
 # puts "⬤".red
 # puts Board::COLOR_PEGS
-game = Game.new
-game.menu
+play_game
