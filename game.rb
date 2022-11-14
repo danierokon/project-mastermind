@@ -3,6 +3,7 @@
 require_relative 'display.rb'
 require_relative 'color.rb'
 require_relative 'board.rb'
+require_relative 'ai_logic.rb'
 
 PEGS = ["black", "red", "green", "brown", "blue", "magenta", "cyan", "gray"]
 class Game
@@ -14,6 +15,7 @@ class Game
     @code = nil
     @guess = nil
     @board = Board.new
+    @ai = Logic.new
   end
 
   def menu
@@ -31,7 +33,7 @@ class Game
     puts display_setup_choice
     input = gets.chomp
     return gaming if input == '1'
-    return puts "human input code" if input == '2'
+    return computer_guesser_mode if input == '2'
 
     puts display_input_warning
     game_setup
@@ -45,32 +47,39 @@ class Game
   def gaming
     gaming = true
     generate_code
+    puts clues_explained
     while gaming == true
       @board.display_board
       puts how_to_guess
       puts @board.pegs_numbers
       puts gaming_message(@current_turn)
       input = gets.chomp
-      input = input_check(input)
+      input = input_check(input,1)
       # compare @guess vs @code for feedback/result
       prefect_match = check_answer(@guess)
       gaming = delcare_result(prefect_match, @current_turn)
       @current_turn += 1
-    end 
-    puts thank_you_message
+    end
   end
 
   # check if input has 0 or 9, if integer, if 4 digit
-  def input_check(input)
+  def input_check(input, type)
     if input.length == 4 && input.match?(/[1-8]{4}/)
       # puts "input good"
-      @guess = input.split('')
-      @guess = replace_number_to_color(@guess)
-      @board.add_guesses(@guess, @current_turn)
+      if type == 1
+        @guess = input.split('')
+        @guess = replace_number_to_color(@guess)
+        @board.add_guesses(@guess, @current_turn)
+      end
+      if type == 2
+        @code = input.split('')
+        @code = replace_number_to_color(@code)
+        @board.generate_code(@code)
+      end
     else
       puts bad_input
       input = gets.chomp
-      input_check(input)
+      input_check(input, type)
     end
   end
 
@@ -101,19 +110,20 @@ class Game
     perfect_match = 0
     close_match = 0
     temp = []
-    index_given_clue = []
     @guess.each {|ele| temp << ele.clone}
     @guess.each_with_index do |element, index|
       if @guess[index] == @code[index]
         perfect_match += 1
         temp[index].replace('Given clues')
-        index_given_clue << index.clone
       end
     end
-    @code.each_with_index do |element, index|      
-      puts "temp looks like #{temp}"
-      close_match += 1 if temp.include?(element) && index_given_clue.include?(index) == false
-      
+    @guess.each_with_index do |element, index|
+      @code.each_with_index do |code, c_index|
+        if index != c_index && element == code && temp.include?(element)
+        close_match += 1
+        temp[index].replace('Given clues')
+        end
+      end
     end
     @board.add_clues(perfect_match, close_match, @current_turn)
     perfect_match
@@ -131,5 +141,31 @@ class Game
       return false
     end
     true
+  end
+
+  def computer_guesser_mode
+    # player enter code -> computer guess
+    human_code_maker
+    # ai gaming
+    gaming = true
+    while gaming == true
+      @board.display_board
+      input_check(@ai.submit_guess(1, @board.feedback), 1) if @current_turn == 1
+      input_check(@ai.submit_guess(@current_turn, @board.feedback), 1) unless @current_turn == 1
+      # compare @guess vs @code for feedback/result
+      prefect_match = check_answer(@guess)
+      gaming = delcare_result(prefect_match, @current_turn)
+      @current_turn += 1
+    end
+  end
+
+  def human_code_maker
+    puts code_maker_message
+    puts @board.pegs_numbers
+    input = gets.chomp
+    input_check(input, 2)
+    puts successful_code_creation
+    puts press_to_continue
+    gets
   end
 end

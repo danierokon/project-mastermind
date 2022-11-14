@@ -50,4 +50,23 @@ module Display
   def thank_you_message
     "Thank you for playing! Another game maybe?(y/n)"
   end
+
+  def clues_explained
+    "When a guess is submitted, clues will be displayed on screen.
+  A #{'⬤'.red} represents a perfect match
+  A #{'⦿'.red} represents a match of correct color but wrong position"
+  end
+
+  def code_maker_message
+    "Create the secret code using numbers to represent the color pegs. (1-8, dupes allowed)"
+  end
+
+  def successful_code_creation
+    "Secret code created successfully,now the computer will try to crack the code!"
+  end
+
+  def press_to_continue
+    "Press enter to continue."
+  end
+
 end

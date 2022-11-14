@@ -7,6 +7,7 @@ include Display
 def play_game
   new_game = Game.new
   new_game.menu
+  puts thank_you_message
   replay
 end
 
