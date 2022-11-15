@@ -5,7 +5,7 @@ require_relative 'color.rb'
 require_relative 'board.rb'
 require_relative 'ai_logic.rb'
 
-PEGS = ["black", "red", "green", "brown", "blue", "magenta", "cyan", "gray"]
+PEGS = ["black", "red", "green", "brown", "blue", "magenta"] # , "cyan", "gray"
 class Game
   include Display
   attr_reader :board
@@ -57,15 +57,13 @@ class Game
       input = input_check(input,1)
       # compare @guess vs @code for feedback/result
       prefect_match = check_answer(@guess)
-      gaming = delcare_result(prefect_match, @current_turn)
+      gaming = delcare_result(prefect_match, @current_turn, false)
       @current_turn += 1
     end
   end
-
-  # check if input has 0 or 9, if integer, if 4 digit
+  
   def input_check(input, type)
-    if input.length == 4 && input.match?(/[1-8]{4}/)
-      # puts "input good"
+    if input.length == 4 && input.match?(/[1-6]{4}/)      
       if type == 1
         @guess = input.split('')
         @guess = replace_number_to_color(@guess)
@@ -111,6 +109,7 @@ class Game
     close_match = 0
     temp_g = []
     temp_c = []
+    perfect_index = [] # code index with perfect match
     @code.each {|ele| temp_c << ele.clone}
     @guess.each {|ele| temp_g << ele.clone}
     @guess.each_with_index do |element, index|
@@ -118,11 +117,12 @@ class Game
         perfect_match += 1
         temp_c[index].replace('Given clues')
         temp_g[index].replace('Given clues')
+        perfect_index << index.clone
       end
     end
     @guess.each_with_index do |element, index|
       @code.each_with_index do |code, c_index|
-        if index != c_index && element == code && temp_c.include?(code)
+        if index != c_index && element == code && temp_c.include?(code) && temp_g.include?(element) && !perfect_index.include?(c_index)
           close_match += 1
           temp_c[c_index].replace('Given clues')
           temp_g[index].replace('Given clues')
@@ -133,15 +133,18 @@ class Game
     perfect_match
   end
 
-  def delcare_result(perfect_match, current_turn)
+  def delcare_result(perfect_match, current_turn, ai_cracker)
     # result when turns = 12 or prefect match = 4
     if perfect_match == 4
       puts reveal_code(@board.secret_code.join(" "))
-      puts win_message
+      puts win_message if ai_cracker == false
+      puts ai_won if ai_cracker == true
       return false
     elsif current_turn == 12
+      @board.display_board
       puts reveal_code(@board.secret_code.join(" "))
-      puts turn_limit
+      puts turn_limit if ai_cracker == false
+      puts ai_turn_limit if ai_cracker ==true
       return false
     end
     true
@@ -153,13 +156,14 @@ class Game
     # ai gaming
     gaming = true
     while gaming == true
-      @board.display_board
       input_check(@ai.submit_guess(1, @board.feedback), 1) if @current_turn == 1
       input_check(@ai.submit_guess(@current_turn, @board.feedback), 1) unless @current_turn == 1
-      # compare @guess vs @code for feedback/result
       prefect_match = check_answer(@guess)
-      gaming = delcare_result(prefect_match, @current_turn)
+      @board.display_board
+      gaming = delcare_result(prefect_match, @current_turn, true)
       @current_turn += 1
+      puts press_to_continue
+      gets
     end
   end
 

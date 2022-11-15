@@ -18,8 +18,8 @@ class Board
                 "brown" => @@brown,
                 "blue" => @@blue,
                 "magenta" => @@magenta,
-                "cyan" => @@cyan,
-                "gray" => @@gray}
+                } #"cyan" => @@cyan,
+                 #"gray" => @@gray
 
   def initialize
     @secret_code = Array.new
@@ -28,7 +28,7 @@ class Board
   end
 
   def display_board
-     puts "TEST Secret code: " + @secret_code.join(" ")    
+    #puts "TEST Secret code: " + @secret_code.join(" ")    
     @guesses.each_with_index do |guess, index|
       puts "#{index + 1}.  #{guess.join(" ")}    #{@feedback[index]}" unless guess == nil
     end
@@ -44,7 +44,7 @@ class Board
   end
 
   def pegs_numbers
-    "1 = #{@@black}, 2 = #{@@red}, 3 = #{@@green}, 4 = #{@@brown}, 5 = #{@@blue}, 6 = #{@@magenta}, 7 = #{@@cyan}, 8 = #{@@gray}"
+    "1 = #{@@black}, 2 = #{@@red}, 3 = #{@@green}, 4 = #{@@brown}, 5 = #{@@blue}, 6 = #{@@magenta}" # , 7 = #{@@cyan}, 8 = #{@@gray}
   end
 
   def add_guesses(guess_array, current_turn)

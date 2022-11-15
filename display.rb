@@ -32,7 +32,7 @@ module Display
   end
 
   def bad_input
-    "Makes sure your input is just 4 numbers(1-8) (dupes allowed)".red
+    "Makes sure your input is just 4 numbers(1-6) (dupes allowed)".red
   end
 
   def win_message
@@ -67,6 +67,15 @@ module Display
 
   def press_to_continue
     "Press enter to continue."
+  end
+
+  def ai_won
+    "The computer had cracked your code!"
+  end
+
+  def ai_turn_limit
+    # is this even possible?
+    "The AI failed to cracked your code in 12 turns!"
   end
 
 end
