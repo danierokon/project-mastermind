@@ -1,8 +1,7 @@
 # require_relative 'game.rb'
 # AI logic for cracking the code
-require_relative 'board.rb'
+require_relative 'board'
 class Logic
-  
   def initialize
     @possible_guess_list = [*1..6].repeated_permutation(4).to_a
     @previous_clues = []
@@ -21,22 +20,21 @@ class Logic
     close_match = score[1]
     elim_guesses(perfect_match, close_match, @possible_guess_list)
   end
-  
 
   def submit_guess(current_turn, feedback_array)
     if current_turn == 1
       # puts "length of possible code list = #{@possible_guess_list.length}"
-      @previous_guess = '1122'.split('').map!{|n| n.to_i}
+      @previous_guess = '1122'.split('').map! { |n| n.to_i }
       '1122'
-    else 
+    else
       @previous_clues = []
       feedback_array.each_with_index do |feedback, index|
-      @previous_clues << feedback.clone if index == current_turn - 2
+        @previous_clues << feedback.clone if index == current_turn - 2
       end
       narrow_guesses
       # puts "length of possible code list = #{@possible_guess_list.length}"
       @previous_guess = @possible_guess_list.sample
-      return @previous_guess.join('')
+      @previous_guess.join('')
     end
   end
 
@@ -52,23 +50,25 @@ class Logic
       temp_g = []
       temp_c = []
       perfect_index = [] # code index with perfect match
-      code.each {|ele| temp_c << ele.clone}
-      guess.each {|ele| temp_g << ele.clone}
-      guess.each_with_index do |element, index|
-        if guess[index] == code[index]
-          pm += 1
-          temp_c[index] = ('Given clues')
-          temp_g[index] = ('Given clues')
-          perfect_index << index.clone
-        end
+      code.each { |ele| temp_c << ele.clone }
+      guess.each { |ele| temp_g << ele.clone }
+      guess.each_with_index do |_element, index|
+        next unless guess[index] == code[index]
+
+        pm += 1
+        temp_c[index] = 'Given clues'
+        temp_g[index] = 'Given clues'
+        perfect_index << index.clone
       end
       guess.each_with_index do |element, index|
         code.each_with_index do |code, c_index|
-          if index != c_index && element == code && temp_c.include?(code) && temp_g.include?(element) && !perfect_index.include?(c_index)
-            cm += 1
-            temp_c[c_index] = ('Given clues')
-            temp_g[index] = ('Given clues')
+          unless index != c_index && element == code && temp_c.include?(code) && temp_g.include?(element) && !perfect_index.include?(c_index)
+            next
           end
+
+          cm += 1
+          temp_c[c_index] = 'Given clues'
+          temp_g[index] = 'Given clues'
         end
       end
       true if pm == perfect_match && cm == close_match

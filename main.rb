@@ -1,7 +1,7 @@
-require_relative 'game.rb'
-require_relative 'display.rb'
-require_relative 'board.rb'
-require_relative 'color.rb'
+require_relative 'game'
+require_relative 'display'
+require_relative 'board'
+require_relative 'color'
 
 include Display
 def play_game
