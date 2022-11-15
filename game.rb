@@ -109,19 +109,23 @@ class Game
   def check_answer(guess)
     perfect_match = 0
     close_match = 0
-    temp = []
-    @guess.each {|ele| temp << ele.clone}
+    temp_g = []
+    temp_c = []
+    @code.each {|ele| temp_c << ele.clone}
+    @guess.each {|ele| temp_g << ele.clone}
     @guess.each_with_index do |element, index|
       if @guess[index] == @code[index]
         perfect_match += 1
-        temp[index].replace('Given clues')
+        temp_c[index].replace('Given clues')
+        temp_g[index].replace('Given clues')
       end
     end
     @guess.each_with_index do |element, index|
       @code.each_with_index do |code, c_index|
-        if index != c_index && element == code && temp.include?(element)
-        close_match += 1
-        temp[index].replace('Given clues')
+        if index != c_index && element == code && temp_c.include?(code)
+          close_match += 1
+          temp_c[c_index].replace('Given clues')
+          temp_g[index].replace('Given clues')
         end
       end
     end
